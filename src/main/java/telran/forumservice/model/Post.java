@@ -14,8 +14,7 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
-@Document(collation = "postsdb")
+@EqualsAndHashCode(of = {"id"})
 @Builder
 @Getter
 public class Post {

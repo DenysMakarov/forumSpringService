@@ -9,6 +9,8 @@ import telran.forumservice.dto.PostDto;
 import telran.forumservice.model.Post;
 import telran.forumservice.service.ForumService;
 
+import java.util.List;
+
 @RestController
 public class ForumController {
     ForumService forumService;
@@ -19,37 +21,37 @@ public class ForumController {
     }
 
     @PostMapping("/forum/post/{author}")
-    public Post addPost(@PathVariable("author") String author, @RequestBody ContentDto contentDto ){
+    public Post addPost(@PathVariable("author") String author, @RequestBody ContentDto contentDto) {
         return forumService.addPost(contentDto, author);
     }
 
     @GetMapping("/forum/post/{id}")
-    public PostDto findPostById(@PathVariable("id") String id){
+    public PostDto findPostById(@PathVariable("id") String id) {
         return forumService.findPostById(id);
     }
 
-//    @DeleteMapping("/forum/post/{id}")
-//    public PostDto deletePost(@PathVariable("id") String id){
-//        return forumService.deletePost(id);
-//    }
+    @DeleteMapping("/forum/post/{id}")
+    public PostDto deletePost(@PathVariable String id) {
+        return forumService.removePost(id);
+    }
 
     @PutMapping("/forum/post/{id}")
-    public PostDto updatePost(@PathVariable String id, @RequestBody ContentDto contentDto){
+    public PostDto updatePost(@PathVariable String id, @RequestBody ContentDto contentDto) {
         return forumService.updatePost(id, contentDto);
     }
 
     @PutMapping("/forum/post/{id}/like")
-    public void addLike(@PathVariable String id){
+    public void addLike(@PathVariable String id) {
         forumService.addLikeToPost(id);
     }
 
     @PutMapping("/forum/post/{id}/comment/{author}")
-    public PostDto addCommentToPost(@PathVariable String id, @PathVariable String author, @RequestBody MessageDto messageDto){
+    public PostDto addCommentToPost(@PathVariable String id, @PathVariable String author, @RequestBody MessageDto messageDto) {
         return forumService.addCommentToPost(id, author, messageDto);
     }
 
-//    @GetMapping("/forum/posts/author/{author}")
-//    public List<PostDto> findPostByAuthor(@PathVariable String author){
-//        return forumRepository.findPostByAuthor(author);
-//    }
+    @GetMapping("/forum/posts/author/{author}")
+    public List<PostDto> FindPostsByAuthor(@PathVariable String author) {
+        return forumService.findPostsByAuthor(author);
+    }
 }

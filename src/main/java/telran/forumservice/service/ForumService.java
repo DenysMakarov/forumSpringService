@@ -11,10 +11,9 @@ import java.util.List;
 public interface ForumService {
     Post addPost(ContentDto contentDto, String author);
     PostDto findPostById(String id);
-    PostDto deletePost(String id);
+    PostDto removePost(String id);
     PostDto updatePost(String id, ContentDto contentDto);
     boolean addLikeToPost(String id);
     PostDto addCommentToPost(String id, String author, MessageDto message);
-    List<PostDto> findPostByAuthor(String author);
-
+    List<PostDto> findPostsByAuthor(String author);
 }

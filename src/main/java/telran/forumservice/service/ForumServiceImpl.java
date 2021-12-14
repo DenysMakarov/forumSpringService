@@ -8,6 +8,8 @@ import telran.forumservice.dto.*;
 import telran.forumservice.model.Post;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ForumServiceImpl implements ForumService {
@@ -44,7 +46,7 @@ public class ForumServiceImpl implements ForumService {
     }
 
     @Override
-    public PostDto deletePost(String id) {
+    public PostDto removePost(String id) {
         Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFondException(id));
         forumRepository.deleteById(id);
         return modelMapper.map(post, PostDto.class);
@@ -79,7 +81,9 @@ public class ForumServiceImpl implements ForumService {
     }
 
     @Override
-    public List<PostDto> findPostByAuthor(String author) {
-        return null;
+    public List<PostDto> findPostsByAuthor(String author) {
+                return forumRepository.findPostsByAuthor(author)
+                .map(s -> modelMapper.map(s, PostDto.class))
+                .collect(Collectors.toList());
     }
 }
