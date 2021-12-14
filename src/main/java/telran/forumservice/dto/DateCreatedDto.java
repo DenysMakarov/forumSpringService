@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class DateCreatedDto {
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDateTime from;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDateTime to;
 
 }

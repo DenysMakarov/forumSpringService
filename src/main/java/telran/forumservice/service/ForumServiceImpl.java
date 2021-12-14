@@ -95,6 +95,7 @@ public class ForumServiceImpl implements ForumService {
                 .collect(Collectors.toList());
     }
 
+    // has not working yet
     @Override
     public List<PostDto> findPostsByDateCreated(DateCreatedDto date) {
         return forumRepository.findPostByDateCreatedBetween(date.getFrom(), date.getTo())
