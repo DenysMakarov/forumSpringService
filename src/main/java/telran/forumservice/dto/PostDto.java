@@ -15,9 +15,10 @@ import java.util.List;
 public class PostDto {
     String id;
     String title;
+    String content;
     String author;
     LocalDateTime dateCreated;
     List<String> tags;
     Integer likes;
-//    List<CommentDto> comments;
+    List<CommentDto> comments;
 }
