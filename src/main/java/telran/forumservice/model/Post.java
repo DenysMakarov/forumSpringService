@@ -32,8 +32,8 @@ public class Post {
     Set<String> tags;
     @Setter
     int likes;
-    @Setter
-    Set<CommentDto> comments = new HashSet<>();
+//    @Setter
+    Set<Comment> comments = new HashSet<>();
 
     public Post(String title, String content, String author, Set<String> tags) {
 //        this.id = author + System.currentTimeMillis();
@@ -44,25 +44,4 @@ public class Post {
         dateCreated = LocalDateTime.now();
         comments = new HashSet<>();
     }
-
-//    public Post(String title, String content, String author) {
-//        this(title, content, author, new HashSet<>());
-//    }
-//
-//    public void addLike() {
-//        likes++;
-//    }
-//
-//    public boolean addComment(Comment comment) {
-//        return comments.add(comment);
-//    }
-//
-//    public boolean addTag(String tag) {
-//        return tags.add(tag);
-//    }
-//
-//    public boolean removeTag(String tag) {
-//        return tags.remove(tag);
-//    }
-
 }

@@ -2,6 +2,7 @@ package telran.forumservice.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import telran.forumservice.dto.CommentDto;
 
 import java.time.LocalDateTime;
 
@@ -19,12 +20,9 @@ public class Comment {
     int likes;
 
     public Comment(String user, String message) {
-        dateCreated = LocalDateTime.now();
         this.user = user;
         this.message = message;
+        this.dateCreated = LocalDateTime.now();
+        this.likes = 0;
     }
-
-//    public void addLike() {
-//        likes++;
-//    }
 }

@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import telran.forumservice.dao.ForumMongoRepository;
 import telran.forumservice.dto.*;
+import telran.forumservice.model.Comment;
 import telran.forumservice.model.Post;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,7 +52,6 @@ public class ForumServiceImpl implements ForumService {
         Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFondException(id));
         forumRepository.deleteById(id);
         return modelMapper.map(post, PostDto.class);
-        //        return post == null ? null : modelMapper.map(post, PostDto.class);
     }
 
     @Override
@@ -66,7 +67,7 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public boolean addLikeToPost(String id) {
         Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFondException(id));
-        post.setLikes(post.getLikes()+1);
+        post.setLikes(post.getLikes() + 1);
         forumRepository.save(post);
         return true;
     }
@@ -74,16 +75,30 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public PostDto addCommentToPost(String id, String author, MessageDto message) {
         Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFondException(id));
-        CommentDto commentDto = new CommentDto(author, message.getMessage());
-        post.getComments().add(commentDto);
+        Comment comment = new Comment(author, message.getMessage());
+        post.getComments().add(comment);
         forumRepository.save(post);
         return modelMapper.map(post, PostDto.class);
     }
 
     @Override
     public List<PostDto> findPostsByAuthor(String author) {
-                return forumRepository.findPostsByAuthor(author)
-                .map(s -> modelMapper.map(s, PostDto.class))
+        return forumRepository.findPostsByAuthor(author)
+                .map(p -> modelMapper.map(p, PostDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PostDto> findPostsByTags(List<String> tags) {
+        return forumRepository.findPostsByTags(tags)
+                .map(p -> modelMapper.map(p, PostDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PostDto> findPostsByDateCreated(DateCreatedDto date) {
+        return forumRepository.findPostByDateCreatedBetween(date.getFrom(), date.getTo())
+                .map(p -> modelMapper.map(p, PostDto.class))
                 .collect(Collectors.toList());
     }
 }

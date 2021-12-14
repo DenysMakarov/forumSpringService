@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import telran.forumservice.dto.ContentDto;
+import telran.forumservice.dto.DateCreatedDto;
 import telran.forumservice.dto.MessageDto;
 import telran.forumservice.dto.PostDto;
 import telran.forumservice.model.Post;
 import telran.forumservice.service.ForumService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -51,7 +53,18 @@ public class ForumController {
     }
 
     @GetMapping("/forum/posts/author/{author}")
-    public List<PostDto> FindPostsByAuthor(@PathVariable String author) {
+    public List<PostDto> findPostsByAuthor(@PathVariable String author){
         return forumService.findPostsByAuthor(author);
     }
+
+    @PostMapping("/forum/posts/tags")
+    public List<PostDto> findPostsByTags(@RequestBody List<String> tags){
+        return forumService.findPostsByTags(tags);
+    }
+
+    @PostMapping("/forum/posts/period")
+    public List<PostDto> findPostsByLocalDate(@RequestBody DateCreatedDto date){
+        return forumService.findPostsByDateCreated(date);
+    }
+
 }
