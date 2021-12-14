@@ -8,6 +8,7 @@ import telran.forumservice.dto.*;
 import telran.forumservice.model.Comment;
 import telran.forumservice.model.Post;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -95,10 +96,10 @@ public class ForumServiceImpl implements ForumService {
                 .collect(Collectors.toList());
     }
 
-    // has not working yet
     @Override
     public List<PostDto> findPostsByDateCreated(DateCreatedDto date) {
-        return forumRepository.findPostByDateCreatedBetween(date.getFrom(), date.getTo())
+//        System.out.println(date);
+        return forumRepository.findPostByDateCreatedBetween(date.getDateFrom(), date.getDateTo())
                 .map(p -> modelMapper.map(p, PostDto.class))
                 .collect(Collectors.toList());
     }

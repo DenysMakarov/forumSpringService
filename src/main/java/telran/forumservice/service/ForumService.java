@@ -7,6 +7,7 @@ import telran.forumservice.dto.MessageDto;
 import telran.forumservice.dto.PostDto;
 import telran.forumservice.model.Post;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
