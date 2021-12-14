@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import telran.forumservice.dto.ContentDto;
+import telran.forumservice.dto.MessageDto;
 import telran.forumservice.dto.PostDto;
 import telran.forumservice.model.Post;
 import telran.forumservice.service.ForumService;
@@ -42,11 +43,11 @@ public class ForumController {
         forumService.addLikeToPost(id);
     }
 
-//    @PutMapping("/forum/post/{id}/comment/{author}")
-//    public PostDto addCommentToPost(@PathVariable String id, @PathVariable String author, @RequestBody MessageDto messageDto){
-//        return forumRepository.addCommentToPost(messageDto);
-//    }
-//
+    @PutMapping("/forum/post/{id}/comment/{author}")
+    public PostDto addCommentToPost(@PathVariable String id, @PathVariable String author, @RequestBody MessageDto messageDto){
+        return forumService.addCommentToPost(id, author, messageDto);
+    }
+
 //    @GetMapping("/forum/posts/author/{author}")
 //    public List<PostDto> findPostByAuthor(@PathVariable String author){
 //        return forumRepository.findPostByAuthor(author);

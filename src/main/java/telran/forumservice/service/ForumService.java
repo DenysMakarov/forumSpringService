@@ -14,7 +14,7 @@ public interface ForumService {
     PostDto deletePost(String id);
     PostDto updatePost(String id, ContentDto contentDto);
     boolean addLikeToPost(String id);
-    PostDto addCommentToPost(MessageDto message);
+    PostDto addCommentToPost(String id, String author, MessageDto message);
     List<PostDto> findPostByAuthor(String author);
 
 }

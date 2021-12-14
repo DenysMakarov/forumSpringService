@@ -4,10 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import telran.forumservice.dao.ForumMongoRepository;
-import telran.forumservice.dto.ContentDto;
-import telran.forumservice.dto.MessageDto;
-import telran.forumservice.dto.PostDto;
-import telran.forumservice.dto.PostNotFondException;
+import telran.forumservice.dto.*;
 import telran.forumservice.model.Post;
 
 import java.util.List;
@@ -73,8 +70,12 @@ public class ForumServiceImpl implements ForumService {
     }
 
     @Override
-    public PostDto addCommentToPost(MessageDto message) {
-        return null;
+    public PostDto addCommentToPost(String id, String author, MessageDto message) {
+        Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFondException(id));
+        CommentDto commentDto = new CommentDto(author, message.getMessage());
+        post.getComments().add(commentDto);
+        forumRepository.save(post);
+        return modelMapper.map(post, PostDto.class);
     }
 
     @Override

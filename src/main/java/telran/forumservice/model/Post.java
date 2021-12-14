@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import telran.forumservice.dto.CommentDto;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -32,7 +33,8 @@ public class Post {
     Set<String> tags;
     @Setter
     int likes;
-    Set<Comment> comments = new HashSet<>();
+    @Setter
+    Set<CommentDto> comments = new HashSet<>();
 
     public Post(String title, String content, String author, Set<String> tags) {
 //        this.id = author + System.currentTimeMillis();
@@ -44,24 +46,24 @@ public class Post {
         comments = new HashSet<>();
     }
 
-    public Post(String title, String content, String author) {
-        this(title, content, author, new HashSet<>());
-    }
-
-    public void addLike() {
-        likes++;
-    }
-
-    public boolean addComment(Comment comment) {
-        return comments.add(comment);
-    }
-
-    public boolean addTag(String tag) {
-        return tags.add(tag);
-    }
-
-    public boolean removeTag(String tag) {
-        return tags.remove(tag);
-    }
+//    public Post(String title, String content, String author) {
+//        this(title, content, author, new HashSet<>());
+//    }
+//
+//    public void addLike() {
+//        likes++;
+//    }
+//
+//    public boolean addComment(Comment comment) {
+//        return comments.add(comment);
+//    }
+//
+//    public boolean addTag(String tag) {
+//        return tags.add(tag);
+//    }
+//
+//    public boolean removeTag(String tag) {
+//        return tags.remove(tag);
+//    }
 
 }
