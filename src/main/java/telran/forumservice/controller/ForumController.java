@@ -1,7 +1,7 @@
 package telran.forumservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import telran.forumservice.dto.ContentDto;
 import telran.forumservice.dto.DateCreatedDto;
@@ -10,10 +10,10 @@ import telran.forumservice.dto.PostDto;
 import telran.forumservice.model.Post;
 import telran.forumservice.service.ForumService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+//@RequestMapping("/forum")
 public class ForumController {
     ForumService forumService;
 
@@ -43,13 +43,14 @@ public class ForumController {
     }
 
     @PutMapping("/forum/post/{id}/like")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addLike(@PathVariable String id) {
         forumService.addLikeToPost(id);
     }
 
     @PutMapping("/forum/post/{id}/comment/{author}")
-    public PostDto addCommentToPost(@PathVariable String id, @PathVariable String author, @RequestBody MessageDto messageDto) {
-        return forumService.addCommentToPost(id, author, messageDto);
+    public PostDto addCommentToPost(@PathVariable String id, @PathVariable("author") String nameAuthor, @RequestBody MessageDto messageDto) {
+        return forumService.addCommentToPost(id, nameAuthor, messageDto);
     }
 
     @GetMapping("/forum/posts/author/{author}")

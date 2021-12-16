@@ -2,17 +2,17 @@ package telran.forumservice.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import telran.forumservice.dao.ForumMongoRepository;
 import telran.forumservice.dto.*;
 import telran.forumservice.model.Comment;
 import telran.forumservice.model.Post;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ForumServiceImpl implements ForumService {
@@ -29,17 +29,17 @@ public class ForumServiceImpl implements ForumService {
     public Post addPost(ContentDto contentDto, String author) {
         Post post = modelMapper.map(contentDto, Post.class);
         post.setAuthor(author);
-        forumRepository.save(post);
-        return Post.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .author(post.getAuthor())
-                .dateCreated(post.getDateCreated())
-                .tags(post.getTags())
-                .likes(post.getLikes())
-                .comments(post.getComments())
-                .build();
+        return forumRepository.save(post);
+//        return Post.builder()
+//                .id(post.getId())
+//                .title(post.getTitle())
+//                .content(post.getContent())
+//                .author(post.getAuthor())
+//                .dateCreated(post.getDateCreated())
+//                .tags(post.getTags())
+//                .likes(post.getLikes())
+//                .comments(post.getComments())
+//                .build();
     }
 
     @Override
@@ -58,9 +58,9 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public PostDto updatePost(String id, ContentDto contentDto) {
         Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFondException(id));
-        post.setTitle(contentDto.getTitle());
-        post.setContent(contentDto.getContent());
-        post.setTags(contentDto.getTags());
+        if (contentDto.getContent() != null) post.setContent(contentDto.getContent());
+        if (contentDto.getTitle() != null) post.setTitle(contentDto.getTitle());
+        if (contentDto.getTags() != null) post.setTags(contentDto.getTags());
         forumRepository.save(post);
         return modelMapper.map(post, PostDto.class);
     }
@@ -98,7 +98,6 @@ public class ForumServiceImpl implements ForumService {
 
     @Override
     public List<PostDto> findPostsByDateCreated(DateCreatedDto date) {
-//        System.out.println(date);
         return forumRepository.findPostByDateCreatedBetween(date.getDateFrom(), date.getDateTo())
                 .map(p -> modelMapper.map(p, PostDto.class))
                 .collect(Collectors.toList());
