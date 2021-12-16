@@ -8,7 +8,7 @@ import telran.accountservise.model.User;
 
 public interface UserService {
     UserDto addUser(User user);
-    UserDto login(String login);
+    UserDto login(LoginDto loginDto);
     UserDto deleteUser(String login);
     UserDto updateUser(String login, UpdateUserDto user);
     RolesDto addRoles(String login, String role);

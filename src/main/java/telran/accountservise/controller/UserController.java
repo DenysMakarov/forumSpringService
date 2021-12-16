@@ -25,7 +25,7 @@ public class UserController {
 
     @PostMapping("/account/login")
     public UserDto loginDto(@RequestBody LoginDto loginDto){
-        return userService.login(loginDto.getLogin());
+        return userService.login(loginDto);
     }
 
     @DeleteMapping("/account/user/{login}")

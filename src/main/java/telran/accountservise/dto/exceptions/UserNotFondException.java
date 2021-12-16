@@ -1,4 +1,4 @@
-package telran.accountservise.dto;
+package telran.accountservise.dto.exceptions;
 
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;

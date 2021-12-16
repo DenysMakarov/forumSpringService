@@ -5,10 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import telran.accountservise.dao.UserMongoRepository;
 import telran.accountservise.dto.*;
+import telran.accountservise.dto.exceptions.UserAlreadyExistException;
+import telran.accountservise.dto.exceptions.UserNotFondException;
 import telran.accountservise.model.User;
-import telran.forumservice.dto.PostNotFondException;
-
-import java.util.Locale;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,8 +28,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto login(String login) {
-        User user = userMongoRepository.findById(login).orElseThrow(() -> new UserNotFondException(login));
+    public UserDto login(LoginDto loginDto) {
+        User user = userMongoRepository.findByLoginAndPassword(loginDto.getLogin(), loginDto.getPassword());
+        if (user == null) throw new UserNotFondException(loginDto.getLogin());
         return modelMapper.map(user, UserDto.class);
     }
 
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public RolesDto deleteRole(String login, String role) {
-        User user = userMongoRepository.findById(login).orElseThrow(UserNotFondException::new);
+        User user = userMongoRepository.findById(login).orElseThrow(() -> new UserNotFondException(login));
         user.getRoles().remove(role.toUpperCase());
         userMongoRepository.save(user);
         return modelMapper.map(user, RolesDto.class);
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean changePassword(LoginDto loginDto) {
-        User user = userMongoRepository.findById(loginDto.getLogin()).orElseThrow(UserNotFondException::new);
+        User user = userMongoRepository.findById(loginDto.getLogin()).orElseThrow(() -> new UserNotFondException(loginDto.getLogin()));
         user.setPassword(loginDto.getPassword());
         userMongoRepository.save(user);
         return true;
