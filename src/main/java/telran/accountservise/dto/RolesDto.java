@@ -1,4 +1,4 @@
-package telran.accauntservise.model;
+package telran.accountservise.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,16 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
-
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
-public class User {
+@Getter
+public class RolesDto {
     String login;
-    String firstName;
-    String lastName;
-    String password;
     Set<String> roles;
 }
-

@@ -1,17 +1,19 @@
-package telran.accauntservise.controller;
+package telran.accountservise.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import telran.accauntservise.dto.LoginDto;
-import telran.accauntservise.dto.RolesDto;
-import telran.accauntservise.dto.UpdateUserDto;
-import telran.accauntservise.dto.UserDto;
-import telran.accauntservise.model.User;
-import telran.accauntservise.service.UserService;
+import telran.accountservise.dto.LoginDto;
+import telran.accountservise.dto.RolesDto;
+import telran.accountservise.dto.UpdateUserDto;
+import telran.accountservise.dto.UserDto;
+import telran.accountservise.model.User;
+import telran.accountservise.service.UserService;
 
 @RestController
 public class UserController {
     UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -23,30 +25,30 @@ public class UserController {
 
     @PostMapping("/account/login")
     public UserDto loginDto(@RequestBody LoginDto loginDto){
-        return userService.login(loginDto);
+        return userService.login(loginDto.getLogin());
     }
 
-    @DeleteMapping("/account/user/@{login}")
-    public UserDto deleteUser(@PathVariable String login){
+    @DeleteMapping("/account/user/{login}")
+    public UserDto removeUser(@PathVariable String login){
         return userService.deleteUser(login);
     }
 
-    @PutMapping ("/account/user/@{login}")
-    public UserDto updateUser(@RequestBody UpdateUserDto updateUserDto){
-        return userService.updateUser(updateUserDto);
+    @PutMapping ("/account/user/{login}")
+    public UserDto updateUser(@PathVariable String login, @RequestBody UpdateUserDto updateUserDto){
+        return userService.updateUser(login, updateUserDto);
     }
 
-    @PutMapping("/account/@{user}/role/@{role}")
+    @PutMapping("/account/user/{user}/role/{role}")
     public RolesDto addRole(@PathVariable String user, @PathVariable String role){
         return userService.addRoles(user, role);
     }
 
-    @DeleteMapping("/account/@{user}/role/@{role}")
+    @DeleteMapping("/account/user/{user}/role/{role}")
     public RolesDto deleteRole(@PathVariable String user, @PathVariable String role){
         return userService.deleteRole(user, role);
     }
 
-    @PutMapping("/account/user/password")
+    @PutMapping("/account/password")
     public boolean changePassword(@RequestBody LoginDto loginDto){
         return userService.changePassword(loginDto);
     }
