@@ -1,11 +1,9 @@
 package telran.forumservice.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import telran.forumservice.dao.ForumMongoRepository;
 import telran.forumservice.dto.*;
 import telran.forumservice.model.Comment;
@@ -15,7 +13,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+//@Slf4j
 public class ForumServiceImpl implements ForumService {
+//    static final Logger log = LoggerFactory.getLogger(ForumServiceImpl.class);
     ForumMongoRepository forumRepository;
     ModelMapper modelMapper;
 
@@ -84,9 +84,13 @@ public class ForumServiceImpl implements ForumService {
 
     @Override
     public List<PostDto> findPostsByAuthor(String author) {
-        return forumRepository.findPostsByAuthor(author)
+//        long t1 = System.currentTimeMillis();
+        List<PostDto> res = forumRepository.findPostsByAuthor(author)
                 .map(p -> modelMapper.map(p, PostDto.class))
                 .collect(Collectors.toList());
+//        long t2 = System.currentTimeMillis();
+//        log.info("duration = {}",  (t2-t1));
+        return res;
     }
 
     @Override

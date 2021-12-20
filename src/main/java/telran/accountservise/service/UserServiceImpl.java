@@ -1,6 +1,8 @@
 package telran.accountservise.service;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import telran.accountservise.dao.UserMongoRepository;
@@ -27,10 +29,17 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(user, UserDto.class);
     }
 
+//    @Override
+//    public UserDto login(LoginDto loginDto) {
+//        User user = userMongoRepository.findByLoginAndPassword(loginDto.getLogin(), loginDto.getPassword());
+//        if (user == null) throw new UserNotFondException(loginDto.getLogin());
+//        return modelMapper.map(user, UserDto.class);
+//    }
+
     @Override
-    public UserDto login(LoginDto loginDto) {
-        User user = userMongoRepository.findByLoginAndPassword(loginDto.getLogin(), loginDto.getPassword());
-        if (user == null) throw new UserNotFondException(loginDto.getLogin());
+    public UserDto login(String str) {
+        User user = userMongoRepository.findById(str).orElseThrow(() -> new UserNotFondException(str));
+        if (user == null) throw new UserNotFondException(str);
         return modelMapper.map(user, UserDto.class);
     }
 

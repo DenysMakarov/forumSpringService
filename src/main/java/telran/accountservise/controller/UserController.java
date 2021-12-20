@@ -9,6 +9,8 @@ import telran.accountservise.dto.UserDto;
 import telran.accountservise.model.User;
 import telran.accountservise.service.UserService;
 
+import java.util.Base64;
+
 @RestController
 public class UserController {
     UserService userService;
@@ -24,8 +26,13 @@ public class UserController {
     }
 
     @PostMapping("/account/login")
-    public UserDto loginDto(@RequestBody LoginDto loginDto){
-        return userService.login(loginDto);
+    public UserDto loginDto(@RequestHeader("Authorization") String token){
+        token = token.split(" ")[1];
+        byte[] bytesDecode = Base64.getDecoder().decode(token);
+        token = new String(bytesDecode);
+        System.out.println(token);
+        String[] credentials = token.split(":");
+        return userService.login(credentials[0]);
     }
 
     @DeleteMapping("/account/user/{login}")
