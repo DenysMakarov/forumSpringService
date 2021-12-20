@@ -1,5 +1,6 @@
 package telran.accountservise.service;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto addUser(User user) {
         if (userMongoRepository.existsById(user.getLogin())) throw new UserAlreadyExistException(user.getLogin());
+        String password = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        user.setPassword(password);
         userMongoRepository.save(user);
         return modelMapper.map(user, UserDto.class);
     }
@@ -40,6 +43,8 @@ public class UserServiceImpl implements UserService {
     public UserDto login(String str) {
         User user = userMongoRepository.findById(str).orElseThrow(() -> new UserNotFondException(str));
         if (user == null) throw new UserNotFondException(str);
+        String password = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        user.setPassword(password);
         return modelMapper.map(user, UserDto.class);
     }
 
@@ -78,7 +83,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean changePassword(LoginDto loginDto) {
         User user = userMongoRepository.findById(loginDto.getLogin()).orElseThrow(() -> new UserNotFondException(loginDto.getLogin()));
-        user.setPassword(loginDto.getPassword());
+        user.setPassword(BCrypt.hashpw(loginDto.getPassword(), BCrypt.gensalt()));
         userMongoRepository.save(user);
         return true;
     }

@@ -1,5 +1,6 @@
 package telran.accountservise.model;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import telran.accountservise.dao.UserMongoRepository;
@@ -7,8 +8,10 @@ import telran.accountservise.dto.exceptions.UserNotFondException;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -43,21 +46,18 @@ public class AuthenticationFilter implements Filter {
                 response.sendError(401, "User not valid");
                 return;
             }
-            if (!credentials[1].equals(user.getPassword())) {
+            if (!BCrypt.checkpw(credentials[1], user.getPassword())) {
                 response.sendError(401, "User or pass not a valid");
                 return;
             }
+            request = new WrappedRequest(request, credentials[0]);
         }
         filterChain.doFilter(request, response);
     }
 
     private boolean checkEndPoints(String path, String method) {
-//        return !("POST".equalsIgnoreCase(method) && path.matches("[/]account[/]register[/]?]"));
-           return  !(
-                ("POST".equalsIgnoreCase(method) && path.matches("[/]account[/]register[/]?]"))
-                || path.matches("[/]forum[/]posts([/]\\w+)+[/]?")
-        );
-//        return false;
+        return !(("POST".equalsIgnoreCase(method) && path.matches("[/]account[/]register[/]?"))
+                        || path.matches("[/]forum[/]posts([/]\\w+)+[/]?"));
     }
 
     private Optional<String[]> getCredential(String token) {
@@ -71,5 +71,26 @@ public class AuthenticationFilter implements Filter {
             e.printStackTrace();
         }
         return Optional.ofNullable(res);
+    }
+
+    private class WrappedRequest extends HttpServletRequestWrapper{
+        String login;
+
+        public WrappedRequest(HttpServletRequest request, String login) {
+            super(request);
+            this.login = login;
+        }
+
+        @Override
+        public Principal getUserPrincipal(){
+//            return new Principal() {
+//                @Override
+//                public String getName() {
+//                    return login;
+//                }
+//            };
+
+           return  () -> login;
+        }
     }
 }
