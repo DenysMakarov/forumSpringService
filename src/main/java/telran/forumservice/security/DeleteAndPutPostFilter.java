@@ -31,14 +31,17 @@ public class DeleteAndPutPostFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         Principal principal = request.getUserPrincipal();
 
-        if (checkEndPoints(request.getServletPath(), request.getMethod())){
+        if (checkEndPoints(request.getServletPath(), request.getMethod())) {
             String[] arrStr = request.getServletPath().split("/");
-            String str = arrStr[arrStr.length-1];
+            String str = arrStr[arrStr.length - 1];
             Post post = repository.findById(str).orElse(null);
             UserProfile user = securityContext.getUser(principal.getName());
 
-//            !(user.getRoles().contains("MODERATOR".toUpperCase())) ||
-            if ( post == null || !post.getAuthor().equals(principal.getName())){
+            if (post == null) {
+                response.sendError(404);
+                return;
+            }
+            if (!(post.getAuthor().equals(principal.getName()) || user.getRoles().contains("MODERATOR".toUpperCase()))) {
                 response.sendError(403);
                 return;
             }
@@ -47,6 +50,6 @@ public class DeleteAndPutPostFilter implements Filter {
     }
 
     private boolean checkEndPoints(String path, String method) {
-        return ("DELETE".equalsIgnoreCase(method) && path.matches("[/]forum[/]post[/]\\w+[/]?")) || ("PUT".equalsIgnoreCase(method) && path.matches("[/]forum[/]post[/]\\w+[/]?"));
+        return ("DELETE".equalsIgnoreCase(method) || "PUT".equalsIgnoreCase(method)) && path.matches("[/]forum[/]post[/]\\w+[/]?");
     }
 }
