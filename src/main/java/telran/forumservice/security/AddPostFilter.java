@@ -15,7 +15,7 @@ import java.security.Principal;
 
 @Service
 @Order(20)
-public class AddPostFilter implements Filter {
+public class AddPostFilter implements Filter{
     UserMongoRepository repository;
     SecurityContext securityContext;
 
@@ -34,9 +34,8 @@ public class AddPostFilter implements Filter {
             Principal principal = request.getUserPrincipal();
             UserProfile user = securityContext.getUser(principal.getName());
             String[] arrStr = request.getServletPath().split("/");
-            String str = arrStr[arrStr.length-1];
 
-            if (!user.getLogin().equals(str)){
+            if (!user.getLogin().equals(arrStr[arrStr.length-1])){
                 response.sendError(403);
                 return;
             }

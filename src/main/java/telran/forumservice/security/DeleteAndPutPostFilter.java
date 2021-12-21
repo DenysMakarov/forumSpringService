@@ -36,7 +36,6 @@ public class DeleteAndPutPostFilter implements Filter {
             String str = arrStr[arrStr.length-1];
             Post post = repository.findById(str).orElse(null);
             UserProfile user = securityContext.getUser(principal.getName());
-//            System.out.println(user.getRoles());
 
 //            !(user.getRoles().contains("MODERATOR".toUpperCase())) ||
             if ( post == null || !post.getAuthor().equals(principal.getName())){
@@ -44,17 +43,10 @@ public class DeleteAndPutPostFilter implements Filter {
                 return;
             }
         }
-
-//        if (!user.getRoles().contains("ADMINISTRATOR".toUpperCase())){
-//            response.sendError(403);
-//            return;
-//        }
-
         filterChain.doFilter(request, response);
     }
 
     private boolean checkEndPoints(String path, String method) {
-        return ("DELETE".equalsIgnoreCase(method) && path.matches("[/]forum[/]post[/]\\w+[/]?"));
-//        return ("DELETE".equalsIgnoreCase(method) && path.matches("[/]forum[/]post[/]\\w+[/]?") || "PUT".equalsIgnoreCase(method) && path.matches("[/]forum[/]post[/]\\w+[/]comment[/]\\w+[/]?"));
+        return ("DELETE".equalsIgnoreCase(method) && path.matches("[/]forum[/]post[/]\\w+[/]?")) || ("PUT".equalsIgnoreCase(method) && path.matches("[/]forum[/]post[/]\\w+[/]?"));
     }
 }
