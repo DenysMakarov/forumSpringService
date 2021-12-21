@@ -1,4 +1,4 @@
-package telran.accountservise.filters;
+package telran.accountservise.security.filters;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,6 +6,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import telran.accountservise.dao.UserMongoRepository;
 import telran.accountservise.model.User;
+import telran.accountservise.security.context.SecurityContext;
+import telran.accountservise.security.context.UserProfile;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -21,10 +23,12 @@ import java.util.Optional;
 public class AuthenticationFilter implements Filter {
 
     UserMongoRepository repository;
+    SecurityContext securityContext;
 
     @Autowired
-    public AuthenticationFilter(UserMongoRepository repository) {
+    public AuthenticationFilter(UserMongoRepository repository, SecurityContext securityContext) {
         this.repository = repository;
+        this.securityContext = securityContext;
     }
 
     @Override
@@ -53,6 +57,12 @@ public class AuthenticationFilter implements Filter {
                 return;
             }
             request = new WrappedRequest(request, credentials[0]);
+            UserProfile userProfile = UserProfile.builder()
+                    .login(user.getLogin())
+                    .password(user.getPassword())
+                    .roles(user.getRoles())
+                    .build();
+            securityContext.addUser(userProfile);
         }
         filterChain.doFilter(request, response);
     }
@@ -65,12 +75,10 @@ public class AuthenticationFilter implements Filter {
     private Optional<String[]> getCredential(String token) {
         String[] res = null;
         try {
-            System.out.println("Token" + token);
             token = token.split(" ")[1]; // Basic || iWjNHBb873bGVgw7hBV
             byte[] bytesDecode = Base64.getDecoder().decode(token);
             token = new String(bytesDecode); // Декодируем
             res = token.split(":");
-            System.out.println(res[0] + " : " + res[1]);
         } catch (Exception e) {
             e.printStackTrace();
         }
