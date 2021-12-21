@@ -1,10 +1,11 @@
-package telran.accountservise.model;
+package telran.accountservise.filters;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import telran.accountservise.dao.UserMongoRepository;
-import telran.accountservise.dto.exceptions.UserNotFondException;
+import telran.accountservise.model.User;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import java.util.Base64;
 import java.util.Optional;
 
 @Service
+@Order(10)
 public class AuthenticationFilter implements Filter {
 
     UserMongoRepository repository;
@@ -57,23 +59,25 @@ public class AuthenticationFilter implements Filter {
 
     private boolean checkEndPoints(String path, String method) {
         return !(("POST".equalsIgnoreCase(method) && path.matches("[/]account[/]register[/]?"))
-                        || path.matches("[/]forum[/]posts([/]\\w+)+[/]?"));
+                        || path.matches("[/]forum[/]posts([/]\\w+)+[/]?")); // + -> сколько угодно раз
     }
 
     private Optional<String[]> getCredential(String token) {
         String[] res = null;
         try {
+            System.out.println("Token" + token);
             token = token.split(" ")[1]; // Basic || iWjNHBb873bGVgw7hBV
             byte[] bytesDecode = Base64.getDecoder().decode(token);
             token = new String(bytesDecode); // Декодируем
             res = token.split(":");
+            System.out.println(res[0] + " : " + res[1]);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return Optional.ofNullable(res);
     }
 
-    private class WrappedRequest extends HttpServletRequestWrapper{
+    private static class WrappedRequest extends HttpServletRequestWrapper{
         String login;
 
         public WrappedRequest(HttpServletRequest request, String login) {
@@ -89,7 +93,6 @@ public class AuthenticationFilter implements Filter {
 //                    return login;
 //                }
 //            };
-
            return  () -> login;
         }
     }

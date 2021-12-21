@@ -22,6 +22,7 @@ public class User {
     String password;
     Set<String> roles = new HashSet<>();
 
+
     public User(String login, String firstName, String lastName, String password) {
         this.login = login;
         this.firstName = firstName;

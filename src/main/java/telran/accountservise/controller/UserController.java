@@ -50,14 +50,14 @@ public class UserController {
         return userService.updateUser(login, updateUserDto);
     }
 
-    @PutMapping("/account/user/{user}/role/{role}")
-    public RolesDto addRole(@PathVariable String user, @PathVariable String role) {
-        return userService.addRoles(user, role);
+    @PutMapping("/account/user/{login}/role/{role}")
+    public RolesDto addRole(@PathVariable String login, @PathVariable String role) {
+        return userService.addRoles(login, role);
     }
 
-    @DeleteMapping("/account/user/{user}/role/{role}")
-    public RolesDto deleteRole(@PathVariable String user, @PathVariable String role) {
-        return userService.deleteRole(user, role);
+    @DeleteMapping("/account/user/{login}/role/{role}")
+    public RolesDto deleteRole(@PathVariable String login, @PathVariable String role) {
+        return userService.deleteRole(login, role);
     }
 
     @PutMapping("/account/user/password")
