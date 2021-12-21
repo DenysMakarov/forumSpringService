@@ -16,12 +16,14 @@ import java.security.Principal;
 
 
 @Service
-@Order(30)
-public class OwnerFilter implements Filter {
+@Order(20)
+public class OwnerFilter implements Filter{
+    UserMongoRepository repository;
     SecurityContext securityContext;
 
     @Autowired
-    public OwnerFilter(SecurityContext securityContext) {
+    public OwnerFilter(UserMongoRepository repository, SecurityContext securityContext) {
+        this.repository = repository;
         this.securityContext = securityContext;
     }
 
@@ -30,13 +32,12 @@ public class OwnerFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-
-        if (checkEndPoints(request.getServletPath())) {
+        if (checkEndPoints(request.getServletPath(), request.getMethod())){
             Principal principal = request.getUserPrincipal();
             UserProfile user = securityContext.getUser(principal.getName());
-            String[] str = request.getServletPath().split("/");
+            String[] arrStr = request.getServletPath().split("/");
 
-            if (!user.getLogin().equals(str[str.length - 1])) {
+            if (!user.getLogin().equals(arrStr[arrStr.length-1])){
                 response.sendError(403);
                 return;
             }
@@ -44,7 +45,7 @@ public class OwnerFilter implements Filter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean checkEndPoints(String path) {
-        return path.matches("[/]account[/]user[/]\\w+[/]?");
+    private boolean checkEndPoints(String path, String method) {
+        return ("POST".equalsIgnoreCase(method) && path.matches("[/]forum[/]post[/]\\w+[/]?") || path.matches("[/]account[/]user[/]\\w+[/]?"));
     }
 }
