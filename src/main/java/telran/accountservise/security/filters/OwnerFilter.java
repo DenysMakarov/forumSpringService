@@ -7,6 +7,8 @@ import telran.accountservise.dao.UserMongoRepository;
 import telran.accountservise.model.User;
 import telran.accountservise.security.context.SecurityContext;
 import telran.accountservise.security.context.UserProfile;
+import telran.forumservice.dao.ForumMongoRepository;
+import telran.forumservice.model.Post;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -17,14 +19,14 @@ import java.security.Principal;
 
 @Service
 @Order(20)
-public class OwnerFilter implements Filter{
-    UserMongoRepository repository;
+public class OwnerFilter implements Filter {
     SecurityContext securityContext;
+    ForumMongoRepository forumRepository;
 
     @Autowired
-    public OwnerFilter(UserMongoRepository repository, SecurityContext securityContext) {
-        this.repository = repository;
+    public OwnerFilter(SecurityContext securityContext, ForumMongoRepository forumRepository) {
         this.securityContext = securityContext;
+        this.forumRepository = forumRepository;
     }
 
     @Override
@@ -32,12 +34,12 @@ public class OwnerFilter implements Filter{
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        if (checkEndPoints(request.getServletPath(), request.getMethod())){
-            Principal principal = request.getUserPrincipal();
-            UserProfile user = securityContext.getUser(principal.getName());
+        Principal principal = request.getUserPrincipal();
+        UserProfile user = securityContext.getUser(principal.getName());
+        if (checkEndPoints(request.getServletPath(), request.getMethod())) {
             String[] arrStr = request.getServletPath().split("/");
 
-            if (!user.getLogin().equals(arrStr[arrStr.length-1])){
+            if (!user.getLogin().equals(arrStr[arrStr.length - 1])) {
                 response.sendError(403);
                 return;
             }

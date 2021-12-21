@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.security.Principal;
 
 @Component
-public class AddCommentFilter implements Filter{
+public class AddCommentFilter implements Filter {
     ForumMongoRepository repository;
     SecurityContext securityContext;
 
@@ -38,8 +38,11 @@ public class AddCommentFilter implements Filter{
             Post post = repository.findById(postId).orElse(null);
             UserProfile user = securityContext.getUser(principal.getName());
 
-
-            if (!author.equals(principal.getName()) || user == null || post == null) {
+            if (user == null || post == null) {
+                response.sendError(404);
+                return;
+            }
+            if (!author.equals(principal.getName())) {
                 response.sendError(403);
                 return;
             }

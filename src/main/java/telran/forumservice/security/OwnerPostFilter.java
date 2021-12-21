@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.security.Principal;
 
 @Component
-public class DeleteAndPutPostFilter implements Filter {
+public class OwnerPostFilter implements Filter {
     ForumMongoRepository repository;
     SecurityContext securityContext;
 
     @Autowired
-    public DeleteAndPutPostFilter(ForumMongoRepository repository, SecurityContext securityContext) {
+    public OwnerPostFilter(ForumMongoRepository repository, SecurityContext securityContext) {
         this.repository = repository;
         this.securityContext = securityContext;
     }
@@ -33,18 +33,19 @@ public class DeleteAndPutPostFilter implements Filter {
 
         if (checkEndPoints(request.getServletPath(), request.getMethod())) {
             String[] arrStr = request.getServletPath().split("/");
-            String str = arrStr[arrStr.length - 1];
-            Post post = repository.findById(str).orElse(null);
+            Post post = repository.findById(arrStr[arrStr.length - 1]).orElse(null);
             UserProfile user = securityContext.getUser(principal.getName());
 
             if (post == null) {
                 response.sendError(404);
                 return;
             }
-            if (!(post.getAuthor().equals(principal.getName()) || user.getRoles().contains("MODERATOR".toUpperCase()))) {
+            if (!(post.getAuthor().equals(principal.getName())
+                    || (request.getMethod().equals("DELETE") && user.getRoles().contains("MODERATOR".toUpperCase())))) {
                 response.sendError(403);
                 return;
             }
+            if ("DELETE".equalsIgnoreCase(request.getMethod())) securityContext.removeUser(user.getLogin()); // ???
         }
         filterChain.doFilter(request, response);
     }

@@ -12,7 +12,7 @@ public interface ForumService {
     PostDto findPostById(String id);
     PostDto removePost(String id);
     PostDto updatePost(String id, ContentDto contentDto);
-    boolean addLikeToPost(String id);
+    boolean addLikeToPost(String id, String principalName);
     PostDto addCommentToPost(String id, String author, MessageDto message);
     List<PostDto> findPostsByAuthor(String author);
     List<PostDto> findPostsByTags(List<String> tags);
