@@ -1,4 +1,4 @@
-package telran.accountservise.security.context;
+package telran.security.context;
 
 public interface SecurityContext {
     boolean addUser(UserProfile user);

@@ -1,11 +1,8 @@
 package telran.forumservice.controller;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import telran.accountservise.security.context.SecurityContext;
 import telran.forumservice.dto.ContentDto;
 import telran.forumservice.dto.DateCreatedDto;
 import telran.forumservice.dto.MessageDto;
@@ -13,9 +10,6 @@ import telran.forumservice.dto.PostDto;
 import telran.forumservice.model.Post;
 import telran.forumservice.service.ForumService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -50,8 +44,8 @@ public class ForumController {
 
     @PutMapping("/forum/post/{id}/like")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addLike(@PathVariable String id, HttpServletRequest req) {
-        forumService.addLikeToPost(id, req.getUserPrincipal().getName());
+    public void addLike(@PathVariable String id) {
+        forumService.addLikeToPost(id);
     }
 
     @PutMapping("/forum/post/{id}/comment/{author}")
@@ -60,17 +54,17 @@ public class ForumController {
     }
 
     @GetMapping("/forum/posts/author/{author}")
-    public List<PostDto> findPostsByAuthor(@PathVariable String author) {
+    public List<PostDto> findPostsByAuthor(@PathVariable String author){
         return forumService.findPostsByAuthor(author);
     }
 
     @PostMapping("/forum/posts/tags")
-    public List<PostDto> findPostsByTags(@RequestBody List<String> tags) {
+    public List<PostDto> findPostsByTags(@RequestBody List<String> tags){
         return forumService.findPostsByTags(tags);
     }
 
     @PostMapping("/forum/posts/period")
-    public List<PostDto> findPostsByLocalDate(@RequestBody DateCreatedDto date) {
+    public List<PostDto> findPostsByLocalDate(@RequestBody DateCreatedDto date){
         return forumService.findPostsByDateCreated(date);
     }
 

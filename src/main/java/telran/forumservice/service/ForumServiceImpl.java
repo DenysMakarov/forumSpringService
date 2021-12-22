@@ -9,16 +9,13 @@ import telran.forumservice.dto.*;
 import telran.forumservice.model.Comment;
 import telran.forumservice.model.Post;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestWrapper;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 //@Slf4j
 public class ForumServiceImpl implements ForumService {
-    //    static final Logger log = LoggerFactory.getLogger(ForumServiceImpl.class);
+//    static final Logger log = LoggerFactory.getLogger(ForumServiceImpl.class);
     ForumMongoRepository forumRepository;
     ModelMapper modelMapper;
 
@@ -69,13 +66,9 @@ public class ForumServiceImpl implements ForumService {
     }
 
     @Override
-    public boolean addLikeToPost(String id, String principalName) {
+    public boolean addLikeToPost(String id) {
         Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFondException(id));
-
-        if (!post.getUsersSetAlreadyLike().contains(principalName)) {
-            post.setLikes(post.getLikes() + 1);
-        }
-        post.getUsersSetAlreadyLike().add(principalName);
+        post.setLikes(post.getLikes() + 1);
         forumRepository.save(post);
         return true;
     }

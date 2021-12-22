@@ -60,8 +60,8 @@ public class UserController {
         return userService.deleteRole(login, role);
     }
 
-    @PutMapping("/account/user/password")
-    public boolean changePassword(@RequestBody LoginDto loginDto) {
-        return userService.changePassword(loginDto);
+    @PutMapping("/account/password")
+    public void changePassword(Principal principal, @RequestHeader("X-Password") String password) {
+        userService.changePassword(principal.getName(), password);
     }
 }

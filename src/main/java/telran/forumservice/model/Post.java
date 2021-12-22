@@ -29,5 +29,13 @@ public class Post {
     @Setter
     int likes;
     Set<Comment> comments = new HashSet<>();
-    Set<String> usersSetAlreadyLike = new HashSet<>();
+
+//    public Post(String title, String content, String author, Set<String> tags) {
+//        this.title = title;
+//        this.content = content;
+//        this.author = author;
+//        this.tags = tags;
+//        dateCreated = LocalDateTime.now();
+//        comments = new HashSet<>();
+//    }
 }

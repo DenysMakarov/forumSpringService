@@ -1,4 +1,4 @@
-package telran.accountservise.security.filters;
+package telran.security.filters;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,8 +6,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import telran.accountservise.dao.UserMongoRepository;
 import telran.accountservise.model.User;
-import telran.accountservise.security.context.SecurityContext;
-import telran.accountservise.security.context.UserProfile;
+import telran.security.context.SecurityContext;
+import telran.security.context.UserProfile;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

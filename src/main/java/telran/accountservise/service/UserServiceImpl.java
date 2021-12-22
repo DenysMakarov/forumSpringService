@@ -81,10 +81,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean changePassword(LoginDto loginDto) {
-        User user = userMongoRepository.findById(loginDto.getLogin()).orElseThrow(() -> new UserNotFondException(loginDto.getLogin()));
-        user.setPassword(BCrypt.hashpw(loginDto.getPassword(), BCrypt.gensalt()));
-        userMongoRepository.save(user);
-        return true;
+    public void changePassword(String login, String password) {
+        User userAccount = userMongoRepository.findById(login).orElseThrow(() -> new UserNotFondException(login));
+        userAccount.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
+        userMongoRepository.save(userAccount);
     }
 }

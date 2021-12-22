@@ -1,4 +1,4 @@
-package telran.accountservise.security.context;
+package telran.security.context;
 
 import org.springframework.stereotype.Component;
 

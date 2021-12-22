@@ -1,9 +1,9 @@
-package telran.forumservice.security;
+package telran.security.filters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import telran.accountservise.security.context.SecurityContext;
-import telran.accountservise.security.context.UserProfile;
+import telran.security.context.SecurityContext;
+import telran.security.context.UserProfile;
 import telran.forumservice.dao.ForumMongoRepository;
 import telran.forumservice.model.Post;
 
@@ -14,12 +14,12 @@ import java.io.IOException;
 import java.security.Principal;
 
 @Component
-public class AddCommentFilter implements Filter {
+public class DeleteAndPutPostFilter implements Filter {
     ForumMongoRepository repository;
     SecurityContext securityContext;
 
     @Autowired
-    public AddCommentFilter(ForumMongoRepository repository, SecurityContext securityContext) {
+    public DeleteAndPutPostFilter(ForumMongoRepository repository, SecurityContext securityContext) {
         this.repository = repository;
         this.securityContext = securityContext;
     }
@@ -32,25 +32,26 @@ public class AddCommentFilter implements Filter {
 
         if (checkEndPoints(request.getServletPath(), request.getMethod())) {
             String[] arrStr = request.getServletPath().split("/");
-            String author = arrStr[arrStr.length - 1];
-            String postId = arrStr[arrStr.length - 3];
-
-            Post post = repository.findById(postId).orElse(null);
+            String str = arrStr[arrStr.length - 1];
+            Post post = repository.findById(str).orElse(null);
             UserProfile user = securityContext.getUser(principal.getName());
 
-            if (user == null || post == null) {
+            if (post == null) {
                 response.sendError(404);
                 return;
             }
-            if (!author.equals(principal.getName())) {
+                                                                 // delete set
+            if (!(post.getAuthor().equals(principal.getName()) ||
+                    (request.getMethod().equals("DELETE") && user.getRoles().contains("MODERATOR".toUpperCase())))) {
                 response.sendError(403);
                 return;
             }
+            if ("DELETE".equalsIgnoreCase(request.getMethod())) securityContext.removeUser(user.getLogin()); // ???
         }
         filterChain.doFilter(request, response);
     }
 
     private boolean checkEndPoints(String path, String method) {
-        return "PUT".equalsIgnoreCase(method) && path.matches("[/]forum[/]post[/]\\w+[/]comment[/]\\w+[/]?");
+        return ("DELETE".equalsIgnoreCase(method) || "PUT".equalsIgnoreCase(method)) && path.matches("[/]forum[/]post[/]\\w+[/]?");
     }
 }

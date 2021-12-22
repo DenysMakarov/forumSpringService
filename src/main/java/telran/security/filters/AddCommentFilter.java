@@ -1,12 +1,9 @@
-package telran.accountservise.security.filters;
+package telran.security.filters;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Service;
-import telran.accountservise.dao.UserMongoRepository;
-import telran.accountservise.model.User;
-import telran.accountservise.security.context.SecurityContext;
-import telran.accountservise.security.context.UserProfile;
+import org.springframework.stereotype.Component;
+import telran.security.context.SecurityContext;
+import telran.security.context.UserProfile;
 import telran.forumservice.dao.ForumMongoRepository;
 import telran.forumservice.model.Post;
 
@@ -16,30 +13,33 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
 
-
-@Service
-@Order(20)
-public class OwnerFilter implements Filter {
+@Component
+public class AddCommentFilter implements Filter{
+    ForumMongoRepository repository;
     SecurityContext securityContext;
-    ForumMongoRepository forumRepository;
 
     @Autowired
-    public OwnerFilter(SecurityContext securityContext, ForumMongoRepository forumRepository) {
+    public AddCommentFilter(ForumMongoRepository repository, SecurityContext securityContext) {
+        this.repository = repository;
         this.securityContext = securityContext;
-        this.forumRepository = forumRepository;
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-
         Principal principal = request.getUserPrincipal();
-        UserProfile user = securityContext.getUser(principal.getName());
+
         if (checkEndPoints(request.getServletPath(), request.getMethod())) {
             String[] arrStr = request.getServletPath().split("/");
+            String author = arrStr[arrStr.length - 1];
+            String postId = arrStr[arrStr.length - 3];
 
-            if (!user.getLogin().equals(arrStr[arrStr.length - 1])) {
+            Post post = repository.findById(postId).orElse(null);
+            UserProfile user = securityContext.getUser(principal.getName());
+
+
+            if (!author.equals(principal.getName()) || user == null || post == null) {
                 response.sendError(403);
                 return;
             }
@@ -48,6 +48,6 @@ public class OwnerFilter implements Filter {
     }
 
     private boolean checkEndPoints(String path, String method) {
-        return ("POST".equalsIgnoreCase(method) && path.matches("[/]forum[/]post[/]\\w+[/]?") || path.matches("[/]account[/]user[/]\\w+[/]?"));
+        return "PUT".equalsIgnoreCase(method) && path.matches("[/]forum[/]post[/]\\w+[/]comment[/]\\w+[/]?");
     }
 }
