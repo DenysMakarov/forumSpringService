@@ -2,15 +2,13 @@ package telran.accountservise.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import telran.accountservise.dto.LoginDto;
 import telran.accountservise.dto.RolesDto;
 import telran.accountservise.dto.UpdateUserDto;
 import telran.accountservise.dto.UserDto;
-import telran.accountservise.model.User;
+import telran.accountservise.model.UserAccount;
 import telran.accountservise.service.UserService;
 
 import java.security.Principal;
-import java.util.Base64;
 
 @RestController
 public class UserController {
@@ -22,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/account/register")
-    public UserDto addUser(@RequestBody User user) {
+    public UserDto addUser(@RequestBody UserAccount user) {
         return userService.addUser(user);
     }
 

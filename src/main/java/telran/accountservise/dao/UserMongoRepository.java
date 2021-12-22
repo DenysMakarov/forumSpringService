@@ -1,8 +1,8 @@
 package telran.accountservise.dao;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import telran.accountservise.model.User;
+import telran.accountservise.model.UserAccount;
 
-public interface UserMongoRepository extends MongoRepository<User, String> {
-    User findByLoginAndPassword(String login, String password);
+public interface UserMongoRepository extends MongoRepository<UserAccount, String> {
+    UserAccount findByLoginAndPassword(String login, String password);
 }

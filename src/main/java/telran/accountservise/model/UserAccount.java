@@ -13,8 +13,8 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(of = {"login"})
-//@Document(collection = "users")
-public class User {
+@Document(collection = "users")
+public class UserAccount {
     @Id
     String login;
     String firstName;
@@ -23,7 +23,7 @@ public class User {
     Set<String> roles = new HashSet<>();
 
 
-    public User(String login, String firstName, String lastName, String password) {
+    public UserAccount(String login, String firstName, String lastName, String password) {
         this.login = login;
         this.firstName = firstName;
         this.lastName = lastName;
