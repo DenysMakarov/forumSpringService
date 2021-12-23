@@ -11,7 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 
 @Configuration
 @EnableWebSecurity // -> говорим, что именно этот класс сейчас отвечает за security авторизацию вместо своих дефолтных
-@EnableGlobalMethodSecurity(prePostEnabled = true) // -> // можем писать защиту на уровне методов
+@EnableGlobalMethodSecurity(prePostEnabled = true) // -> // можем писать защиту на уровне методов - дает использовать @PreAuthorize в контроллере
 public class AuthorizationConfig extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -33,6 +33,14 @@ public class AuthorizationConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/account/user/{login}/role/{role}")
                 .hasRole("ADMINISTRATOR")
+                .antMatchers(HttpMethod.PUT, "/account/user/{login}/**")
+                .access("#login == authentication.name")
+                .antMatchers(HttpMethod.DELETE, "/account/user/{login}/**")
+                .access("#login == authentication.name or hasRole('ADMINISTRATOR')")
+                .antMatchers(HttpMethod.POST,"/forum/post/{author}/**")
+                .access("#author == authentication.name")
+                .antMatchers(HttpMethod.PUT, "/forum/post/{id}/comment/{author}/**")
+                .access("#author == authentication.name")
                 .anyRequest() // любой запрос
                 .authenticated(); // только с аутитификацией
 

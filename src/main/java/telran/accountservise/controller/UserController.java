@@ -1,6 +1,7 @@
 package telran.accountservise.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import telran.accountservise.dto.RolesDto;
@@ -41,11 +42,13 @@ public class UserController {
     }
 
     @DeleteMapping("/account/user/{login}")
+//    @PreAuthorize("#login == authentication.name or hasRole('ADMINISTRATOR')")
     public UserDto removeUser(@PathVariable String login) {
         return userService.deleteUser(login);
     }
 
     @PutMapping("/account/user/{login}")
+//    @PreAuthorize("#login == authentication.name")
     public UserDto updateUser(@PathVariable String login, @RequestBody UpdateUserDto updateUserDto) {
         return userService.updateUser(login, updateUserDto);
     }
