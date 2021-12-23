@@ -1,6 +1,7 @@
 package telran.accountservise.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import telran.accountservise.dto.RolesDto;
 import telran.accountservise.dto.UpdateUserDto;
@@ -34,7 +35,8 @@ public class UserController {
 //        return userService.login(credentials[0]);
 //    }
     @PostMapping("/account/login")
-    public UserDto loginDto(Principal principal) {
+    public UserDto loginDto(Authentication principal) {
+//    public UserDto loginDto(Principal principal) {
         return userService.login(principal.getName());
     }
 
@@ -59,7 +61,7 @@ public class UserController {
     }
 
     @PutMapping("/account/password")
-    public void changePassword(Principal principal, @RequestHeader("X-Password") String password) {
+    public void changePassword(Authentication principal, @RequestHeader("X-Password") String password) {
         userService.changePassword(principal.getName(), password);
     }
 }

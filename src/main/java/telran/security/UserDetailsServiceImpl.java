@@ -2,6 +2,7 @@ package telran.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,16 +20,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.userMongoRepository = userMongoRepository;
     }
 
-    // создаем контекст (Authetication service)
+    // создаем контекст (Authentication service)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("sdks;ldk");
         UserAccount userAccount = userMongoRepository.findById(username).orElseThrow(()-> new UserNotFondException(username));
 
         String[] roles = userAccount.getRoles().stream()
                 .map(r -> "ROLE_" + r.toUpperCase())
                 .toArray(String[]::new);
 
-        return new org.springframework.security.core.userdetails.User(username, userAccount.getPassword(), AuthorityUtils.createAuthorityList(roles));
+        return new User(username, userAccount.getPassword(), AuthorityUtils.createAuthorityList(roles));
     }
 }

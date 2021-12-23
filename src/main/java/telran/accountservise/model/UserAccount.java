@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,9 +28,5 @@ public class UserAccount {
         this.lastName = lastName;
         this.password = password;
     }
-
-//    public void removeRole(String role){
-//        roles.remove(role);
-//    }
 }
 
