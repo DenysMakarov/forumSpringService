@@ -12,5 +12,5 @@ public interface UserService {
     UserDto updateUser(String login, UpdateUserDto user);
     RolesDto addRoles(String login, String role);
     RolesDto deleteRole(String login, String role);
-    void changePassword(String login, String pass);
+    void changePassword(String login, String pass, String newPass);
 }

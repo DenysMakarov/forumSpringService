@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import telran.accountservise.dao.UserMongoRepository;
 import telran.accountservise.dto.exceptions.UserNotFondException;
 import telran.accountservise.model.UserAccount;
+import java.time.LocalDate;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -23,12 +24,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     // создаем контекст (Authentication service)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserAccount userAccount = userMongoRepository.findById(username).orElseThrow(()-> new UserNotFondException(username));
+        UserAccount userAccount = userMongoRepository.findById(username).orElseThrow(() -> new UserNotFondException(username));
 
         String[] roles = userAccount.getRoles().stream()
                 .map(r -> "ROLE_" + r.toUpperCase())
                 .toArray(String[]::new);
+        boolean expDatePassword = LocalDate.now().isBefore(userAccount.getPasswordExpDate());
 
-        return new User(username, userAccount.getPassword(), AuthorityUtils.createAuthorityList(roles));
+        return new User(username, userAccount.getPassword(), true, true, expDatePassword, true, AuthorityUtils.createAuthorityList(roles));
     }
 }

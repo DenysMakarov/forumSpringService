@@ -11,6 +11,8 @@ import telran.accountservise.dto.exceptions.UserAlreadyExistException;
 import telran.accountservise.dto.exceptions.UserNotFondException;
 import telran.accountservise.model.UserAccount;
 
+import java.time.LocalDate;
+
 @Service
 public class UserServiceImpl implements UserService {
     UserMongoRepository userMongoRepository;
@@ -41,11 +43,11 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
-    public UserDto login(String str) {
-        UserAccount user = userMongoRepository.findById(str).orElseThrow(() -> new UserNotFondException(str));
-        if (user == null) throw new UserNotFondException(str);
+    public UserDto login(String login) {
+        UserAccount user = userMongoRepository.findById(login).orElseThrow(() -> new UserNotFondException(login));
+        if (user == null) throw new UserNotFondException(login);
         String password = passwordEncoder.encode(user.getPassword());
-        user.setPassword(password);
+//        user.setPassword(password);
         return modelMapper.map(user, UserDto.class);
     }
 
@@ -81,10 +83,20 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(user, RolesDto.class);
     }
 
+//    @Override
+//    public void changePassword(String login, String password) {
+//        UserAccount userAccount = userMongoRepository.findById(login).orElseThrow(() -> new UserNotFondException(login));
+//            userAccount.setPassword(passwordEncoder.encode(password));
+//            userMongoRepository.save(userAccount);
+//    }
+
     @Override
-    public void changePassword(String login, String password) {
-        UserAccount userAccount = userMongoRepository.findById(login).orElseThrow(() -> new UserNotFondException(login));
-        userAccount.setPassword(passwordEncoder.encode(password));
-        userMongoRepository.save(userAccount);
+    public void changePassword(String login, String oldPassword, String newPassword) {
+        UserAccount userAccount = userMongoRepository.findById(login).orElseThrow(UserNotFondException::new);
+        boolean isSamePassword = passwordEncoder.matches(oldPassword, userAccount.getPassword());
+        if (!isSamePassword) throw new UserNotFondException();
+            userAccount.setPassword(passwordEncoder.encode(newPassword));
+            userAccount.setPasswordExpDate(LocalDate.now().plusDays(30));
+            userMongoRepository.save(userAccount);
     }
 }

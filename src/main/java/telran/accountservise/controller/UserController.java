@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import telran.accountservise.dto.LoginDto;
 import telran.accountservise.dto.RolesDto;
 import telran.accountservise.dto.UpdateUserDto;
 import telran.accountservise.dto.UserDto;
@@ -63,8 +64,13 @@ public class UserController {
         return userService.deleteRole(login, role);
     }
 
+//    @PutMapping("/account/password")
+//    public void changePassword(Authentication principal, @RequestHeader("X-Password") String password) {
+//        userService.changePassword(principal.getName(), password);
+//    }
+
     @PutMapping("/account/password")
-    public void changePassword(Authentication principal, @RequestHeader("X-Password") String password) {
-        userService.changePassword(principal.getName(), password);
+    public void changePassword(@RequestBody LoginDto loginDto, @RequestHeader("X-Password") String password) {
+        userService.changePassword(loginDto.getLogin(), loginDto.getPassword(), password);
     }
 }

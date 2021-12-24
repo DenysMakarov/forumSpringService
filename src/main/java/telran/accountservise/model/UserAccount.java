@@ -24,6 +24,7 @@ public class UserAccount {
     LocalDate passwordExpDate = LocalDate.now().plusDays(30);
 
 
+
     public UserAccount(String login, String firstName, String lastName, String password) {
         this.login = login;
         this.firstName = firstName;
