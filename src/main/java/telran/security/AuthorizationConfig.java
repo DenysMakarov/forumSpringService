@@ -27,6 +27,9 @@ public class AuthorizationConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // отказываемся от cookies
         http.authorizeRequests()
+//                .antMatchers("/")
+//                .access()
+
                 .antMatchers(HttpMethod.POST, "/account/register/**")
                 .permitAll()
                 .antMatchers( "/forum/posts/**")
@@ -41,6 +44,10 @@ public class AuthorizationConfig extends WebSecurityConfigurerAdapter {
                 .access("#author == authentication.name")
                 .antMatchers(HttpMethod.PUT, "/forum/post/{id}/comment/{author}/**")
                 .access("#author == authentication.name")
+                .antMatchers(HttpMethod.PUT, "/forum/post/{id}")
+                .access("@customWebSecurity.checkPostAuthority(#id, authentication.name)")
+                .antMatchers(HttpMethod.PUT, "/forum/post/{id}")
+                .access("@customWebSecurity.checkPostAuthority(#id, authentication.name) or hasRole('MODERATOR')")
                 .anyRequest() // любой запрос
                 .authenticated(); // только с аутитификацией
 

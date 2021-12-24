@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ public class UserAccount {
     String lastName;
     String password;
     Set<String> roles = new HashSet<>();
+    LocalDate passwordExpDate = LocalDate.now().plusDays(30);
 
 
     public UserAccount(String login, String firstName, String lastName, String password) {
